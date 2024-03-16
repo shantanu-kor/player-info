@@ -1,4 +1,5 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom';
 
 const PlayerForm = () => {
     const nameRef = useRef();
@@ -13,6 +14,26 @@ const PlayerForm = () => {
     const wicketsRef = useRef();
     const averageRef = useRef();
 
+    const location = useLocation();
+
+    let data = location.state;
+
+    useEffect(() => {
+        if (data) {
+            nameRef.current.value = data.name;
+            dateOfBirthRef.current.value = data.dateOfBirth;
+            photoUrlRef.current.value = data.photoUrl;
+            birthPlaceRef.current.value = data.birthPlace;
+            careerRef.current.value = data.career;
+            matchesRef.current.value = data.matches;
+            scoreRef.current.value = data.score;
+            fiftiesRef.current.value = data.fifties;
+            centuriesRef.current.value = data.centuries;
+            wicketsRef.current.value = data.wickets;
+            averageRef.current.value = data.average;
+        }
+    }, [])
+
     const submitHandler = (event) => {
         event.preventDefault();
         const name = nameRef.current.value;
@@ -23,17 +44,28 @@ const PlayerForm = () => {
         const matches = matchesRef.current.value;
         const score = scoreRef.current.value;
         const fifties = fiftiesRef.current.value;
-        const centuries = careerRef.current.value;
+        const centuries = centuriesRef.current.value;
         const wickets = wicketsRef.current.value;
         const average = averageRef.current.value;
 
-        fetch('http://localhost:3000/player/add-player', {
-            method: "POST",
-            body: JSON.stringify({ name, dateOfBirth, photoUrl, birthPlace, career, matches, score, fifties, centuries, wickets, average }),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
+        if (data) {
+            fetch(`http://localhost:3000/player/edit-player/${data.id}`, {
+                method: "PUT",
+                body: JSON.stringify({ name, dateOfBirth, photoUrl, birthPlace, career, matches, score, fifties, centuries, wickets, average }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            data = null;
+        } else {
+            fetch('http://localhost:3000/player/add-player', {
+                method: "POST",
+                body: JSON.stringify({ name, dateOfBirth, photoUrl, birthPlace, career, matches, score, fifties, centuries, wickets, average }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+        }
 
         nameRef.current.value = '';
         dateOfBirthRef.current.value = '';
@@ -46,11 +78,11 @@ const PlayerForm = () => {
         centuriesRef.current.value = '';
         wicketsRef.current.value = '';
         averageRef.current.value = '';
-        
+
     };
 
     return (
-        <form className="text-center text-2xl border-2 mx-[450px]" onSubmit={submitHandler}>
+        <form className="text-center text-2xl border-2 mx-[450px] p-4 bg-gray-900" onSubmit={submitHandler}>
             <label htmlFor="name">Name</label>
             <br />
             <input type="text" id="name" ref={nameRef} />
@@ -93,7 +125,7 @@ const PlayerForm = () => {
             <br />
             <label htmlFor="average">Average</label>
             <br />
-            <input type="number" id="average" ref={averageRef} />
+            <input type="number" step="0.01" id="average" ref={averageRef} />
             <br />
             <button type="submit" className="text-2xl m-4 p-1 rounded-lg border-2 border-white">Submit</button>
         </form>

@@ -18,7 +18,7 @@ const Player = sequelize.define('player', {
         allowNull: false
     },
     photoUrl: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(5000),
         allowNull: false
     },
     birthPlace: {
@@ -26,7 +26,7 @@ const Player = sequelize.define('player', {
         allowNull: false
     },
     career: {
-        type: Sequelize.STRING(5000),
+        type: Sequelize.STRING(10000),
         allowNull: false
     },
     matches: {

@@ -3,7 +3,7 @@ const Player = require('../models/player');
 exports.addPlayer = (req, res, next) => {
     const { name, dateOfBirth, photoUrl, birthPlace, career, matches, score, fifties, centuries, wickets, average } = req.body;
     Player.create({
-        name, dateOfBirth, photoUrl, birthPlace, career, matches, score, fifties, centuries, wickets, average, average
+        name, dateOfBirth, photoUrl, birthPlace, career, matches, score, fifties, centuries, wickets, average
     })
     res.send('Player added successfully!');
 };
